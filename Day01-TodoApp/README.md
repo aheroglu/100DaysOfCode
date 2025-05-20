@@ -84,3 +84,7 @@ Visit the app at: `http://localhost:4200`
 
 Happy coding! 👨‍💻  
 Made with ❤️ by [@aheroglu](https://github.com/aheroglu)
+
+## 📸 Preview
+
+![TodoApp Preview](./assets/preview.png)
