@@ -62,6 +62,7 @@ Each post will include:
 Each day, I will create a new folder for that day’s project:
 
 - [Day01 - Todo App](https://github.com/aheroglu/100DaysOfCode/tree/main/Day01-TodoApp)
+- [Day02 - Weather Dashboard](https://github.com/aheroglu/100DaysOfCode/tree/main/Day02-WeatherDashboard)
 
 ---
 
