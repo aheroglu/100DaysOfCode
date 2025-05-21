@@ -1,0 +1,223 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 p-4 md:p-8">
+  <!-- Toast error message -->
+  <div
+    *ngIf="showError"
+    class="fixed bottom-4 right-4 max-w-xs bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded-lg shadow-lg text-sm z-50 transition-opacity duration-300"
+    role="alert"
+  >
+    <span class="inline font-bold uppercase"> {{ errorMessage }}</span>
+  </div>
+  <div class="max-w-4xl mx-auto">
+    <!-- Search Section -->
+    <div class="flex items-center gap-3 mb-8">
+      <div class="relative flex-1">
+        <input
+          [(ngModel)]="city"
+          (keydown.enter)="getWeather(); getForecast()"
+          type="text"
+          placeholder="Search city..."
+          class="w-full py-3 px-5 pr-12 rounded-full bg-white shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+        <button
+          class="absolute right-4 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-700"
+        >
+          <i class="fas fa-search h-5 w-5"></i>
+        </button>
+      </div>
+      <button
+        (click)="getLocationWeather()"
+        class="bg-blue-500 hover:bg-blue-600 text-white p-2.5 rounded-full shadow-md transition-colors cursor-pointer"
+        title="Weather based on your location"
+      >
+        <i class="fas fa-map-marker-alt h-6 w-6"></i>
+      </button>
+    </div>
+
+    @if(weatherData){
+    <div class="space-y-6">
+      <!-- Current Weather Card -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <!-- City and Date Info -->
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">
+            {{ weatherData.name }}
+          </h2>
+          <p class="text-gray-500">{{ formatDate(weatherData.dt) }}</p>
+        </div>
+
+        <!-- Temperature and Weather -->
+        <div class="flex flex-col items-center mb-8">
+          <!-- Weather icons with Font Awesome -->
+          <i
+            *ngIf="weatherData.weather[0].main === 'Clear'"
+            class="fas fa-sun fa-5x mb-2 text-yellow-500"
+          ></i>
+          <i
+            *ngIf="weatherData.weather[0].main === 'Clouds'"
+            class="fas fa-cloud fa-5x mb-2 text-gray-500"
+          ></i>
+          <i
+            *ngIf="weatherData.weather[0].main === 'Rain'"
+            class="fas fa-cloud-rain fa-5x mb-2 text-blue-500"
+          ></i>
+          <i
+            *ngIf="weatherData.weather[0].main === 'Snow'"
+            class="fas fa-snowflake fa-5x mb-2 text-blue-200"
+          ></i>
+          <i
+            *ngIf="
+              ['Mist', 'Fog', 'Haze'].includes(weatherData.weather[0].main)
+            "
+            class="fas fa-smog fa-5x mb-2 text-gray-400"
+          ></i>
+          <i
+            *ngIf="weatherData.weather[0].main === 'Thunderstorm'"
+            class="fas fa-bolt fa-5x mb-2 text-yellow-400"
+          ></i>
+          <i
+            *ngIf="
+              ![
+                'Clear',
+                'Clouds',
+                'Rain',
+                'Snow',
+                'Mist',
+                'Fog',
+                'Haze',
+                'Thunderstorm'
+              ].includes(weatherData.weather[0].main)
+            "
+            class="fas fa-question-circle fa-5x mb-2 text-gray-600"
+          ></i>
+
+          <h1 class="text-5xl font-bold text-blue-500 mb-1">
+            {{ weatherData.main.temp }}°C
+          </h1>
+
+          <p class="text-lg text-gray-600">
+            {{ weatherData.weather[0].main }}
+          </p>
+        </div>
+
+        <!-- Weather Details -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Feels Like -->
+          <div class="bg-blue-50 rounded-xl p-4 flex items-center gap-4">
+            <div class="bg-blue-100 p-3 rounded-lg text-blue-500">
+              <i class="fas fa-temperature-high h-6 w-6"></i>
+            </div>
+            <div>
+              <p class="text-gray-500 text-sm">Feels like</p>
+              <p class="font-semibold text-gray-800">
+                {{ weatherData.main.feels_like }}°C
+              </p>
+            </div>
+          </div>
+
+          <!-- Humidity -->
+          <div class="bg-blue-50 rounded-xl p-4 flex items-center gap-4">
+            <div class="bg-blue-100 p-3 rounded-lg text-blue-500">
+              <i class="fas fa-tint h-6 w-6"></i>
+            </div>
+            <div>
+              <p class="text-gray-500 text-sm">Humidity</p>
+              <p class="font-semibold text-gray-800">
+                {{ weatherData.main.humidity }}%
+              </p>
+            </div>
+          </div>
+
+          <!-- Wind -->
+          <div class="bg-blue-50 rounded-xl p-4 flex items-center gap-4">
+            <div class="bg-blue-100 p-3 rounded-lg text-blue-500">
+              <i class="fas fa-wind h-6 w-6"></i>
+            </div>
+            <div>
+              <p class="text-gray-500 text-sm">Wind</p>
+              <p class="font-semibold text-gray-800">
+                {{ weatherData.wind.speed }} km/s
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-6">5-day Forecast</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-2 lg:gap-4">
+          <div
+            *ngFor="let day of forecastData; let i = index"
+            class="bg-blue-50 rounded-xl p-4 flex flex-col items-center"
+          >
+            <p class="font-medium text-gray-700 mb-2">
+              {{ formatForecastDate(day.dt) }}
+            </p>
+            <!-- Weather icons with Font Awesome -->
+            <i
+              *ngIf="day.weather[0].main === 'Clear'"
+              class="fas fa-sun fa-5x mb-2 text-yellow-500"
+            ></i>
+            <i
+              *ngIf="day.weather[0].main === 'Clouds'"
+              class="fas fa-cloud fa-5x mb-2 text-gray-500"
+            ></i>
+            <i
+              *ngIf="day.weather[0].main === 'Rain'"
+              class="fas fa-cloud-rain fa-5x mb-2 text-blue-500"
+            ></i>
+            <i
+              *ngIf="day.weather[0].main === 'Snow'"
+              class="fas fa-snowflake fa-5x mb-2 text-blue-200"
+            ></i>
+            <i
+              *ngIf="['Mist', 'Fog', 'Haze'].includes(day.weather[0].main)"
+              class="fas fa-smog fa-5x mb-2 text-gray-400"
+            ></i>
+            <i
+              *ngIf="day.weather[0].main === 'Thunderstorm'"
+              class="fas fa-bolt fa-5x mb-2 text-yellow-400"
+            ></i>
+            <i
+              *ngIf="
+                ![
+                  'Clear',
+                  'Clouds',
+                  'Rain',
+                  'Snow',
+                  'Mist',
+                  'Fog',
+                  'Haze',
+                  'Thunderstorm'
+                ].includes(day.weather[0].main)
+              "
+              class="fas fa-question-circle fa-5x mb-2 text-gray-600"
+            ></i>
+
+            <p class="text-xl font-bold text-blue-500">{{ day.main.temp }}°C</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    } @else {
+    <!-- Area to display when no data is found -->
+    <div class="bg-white rounded-2xl shadow-lg p-8 text-center">
+      <i class="fas fa-cloud-sun-rain fa-5x mb-4 text-gray-400"></i>
+      <h2 class="text-2xl font-bold text-gray-700 mb-2">
+        No Weather Data Found
+      </h2>
+      <p class="text-gray-500 mb-4">
+        Please enter a valid city name and try again.
+      </p>
+      <div class="flex justify-center">
+        <div class="bg-blue-50 rounded-xl p-4 inline-block">
+          <p class="text-sm text-gray-600">
+            <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+            Example: Istanbul, London, New York, Tokyo
+          </p>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>
