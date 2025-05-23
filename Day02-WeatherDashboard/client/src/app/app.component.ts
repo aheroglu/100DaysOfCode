@@ -14,7 +14,7 @@ export class AppComponent {
   forecastData: any[] = [];
   errorMessage: string = '';
   showError: boolean = false;
-  apiKey = ''; // YOUR API KEY HERE
+  apiKey = '6a7aa8507ac432d3bf94433ae8291d23'; // YOUR API KEY HERE
   apiUrl: string = 'https://api.openweathermap.org/data/2.5';
 
   constructor(private http: HttpClient) {

@@ -1,4 +1,4 @@
-# 💯 100 Days of Code - Personal Challenge by Ahmet Hakan Eroğlu
+# 💯 100 Days of Code - Personal Challenge by aheroglu
 
 Welcome to my **100 Days of Code** journey!  
 This repository contains a collection of daily projects and code exercises that I build and share every day for 100 consecutive days.
@@ -63,6 +63,7 @@ Each day, I will create a new folder for that day’s project:
 
 - [Day01 - Todo App](https://github.com/aheroglu/100DaysOfCode/tree/main/Day01-TodoApp)
 - [Day02 - Weather Dashboard](https://github.com/aheroglu/100DaysOfCode/tree/main/Day02-WeatherDashboard)
+- [Day03 - AI Chat UI](https://github.com/aheroglu/100DaysOfCode/tree/main/Day03-AIChatUI)
 
 ---
 
