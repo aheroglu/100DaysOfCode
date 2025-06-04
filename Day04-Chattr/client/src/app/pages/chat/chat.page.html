@@ -1,0 +1,155 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bg-white dark:bg-gray-800">
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/home"
+        class="text-black dark:text-white"
+      ></ion-back-button>
+    </ion-buttons>
+
+    <!-- Friend data loaded -->
+    <div class="flex justify-start items-center align-middle" *ngIf="friendData">
+      <div class="flex items-center align-middle">
+        <div
+          *ngIf="!friendData.photoURL"
+          class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center mr-2"
+        >
+          <span class="text-white text-sm font-bold"
+            >{{ getInitials(friendData.displayName) }}</span
+          >
+        </div>
+        <img
+          *ngIf="friendData.photoURL"
+          [src]="friendData.photoURL"
+          alt="Profile"
+          class="w-8 h-8 rounded-full mr-2"
+        />
+        <span class="text-black dark:text-white font-medium"
+          >{{ friendData.displayName || 'User' }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    <div
+      class="absolute inset-x-0 flex justify-center items-center"
+      *ngIf="!friendData"
+    >
+      <div class="flex items-center">
+        <div
+          class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 animate-pulse mr-2"
+        ></div>
+        <div
+          class="h-5 w-24 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"
+        ></div>
+      </div>
+    </div>
+
+    <ion-buttons slot="end">
+      <ion-button class="text-black dark:text-white">
+        <ion-icon name="call-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-gray-100 dark:bg-gray-800">
+  <div class="p-4 space-y-4">
+    <!-- Yükleniyor durumu -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-4">
+      <ion-spinner name="circular"></ion-spinner>
+    </div>
+
+    <!-- Mesaj yok durumu -->
+    <div
+      *ngIf="!isLoading && messages.length === 0"
+      class="flex flex-col items-center justify-center py-8"
+    >
+      <ion-icon
+        name="chatbubble-outline"
+        class="text-5xl text-gray-400 mb-2"
+      ></ion-icon>
+      <p class="text-gray-500 text-center">
+        No messages yet. Start a conversation.
+      </p>
+    </div>
+
+    <!-- Mesajlar -->
+    <ng-container *ngIf="!isLoading && messages.length > 0">
+      <div *ngFor="let message of messages" class="mb-4">
+        <!-- Benim mesajım -->
+        <div
+          *ngIf="message.senderId === auth.currentUser?.uid"
+          class="flex items-end justify-end"
+        >
+          <div
+            class="max-w-[80%] bg-blue-500 rounded-tl-lg rounded-b-lg  p-3 shadow-sm dark:bg-blue-600"
+          >
+            <p class="text-white">{{ message.content }}</p>
+            <span class="text-xs text-blue-200 mt-1 block"
+              >{{ message.sentAt.toDate() | date:'HH:mm' }}</span
+            >
+          </div>
+        </div>
+
+        <!-- Karşı tarafın mesajı -->
+        <div
+          *ngIf="message.senderId !== auth.currentUser?.uid"
+          class="flex items-start"
+        >
+          <div class="max-w-[80%] bg-white rounded-tr-lg rounded-b-lg p-3 shadow-sm">
+            <p class="text-gray-800">{{ message.content }}</p>
+            <span class="text-xs text-gray-500 mt-1 block"
+              >{{ message.sentAt.toDate() | date:'HH:mm' }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ion-content>
+
+<!-- Mesaj gönderme alanı -->
+<ion-footer class="bg-white dark:bg-gray-800 ion-no-border">
+  <form
+    #form="ngForm"
+    (ngSubmit)="sendMessage(form); content = ''; messageInput.focus()"
+    class="p-2 flex items-center"
+  >
+    <ion-button
+      fill="clear"
+      class="text-gray-500 dark:text-gray-400"
+      type="button"
+    >
+      <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+    <div
+      class="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full px-4 py-2 mx-1"
+    >
+      <input
+        #messageInput
+        [(ngModel)]="content"
+        name="content"
+        type="text"
+        placeholder="Type your message..."
+        class="w-full bg-transparent outline-none text-gray-800 dark:text-gray-200"
+        required
+      />
+    </div>
+    <ion-button
+      fill="clear"
+      class="text-gray-500 dark:text-gray-400"
+      type="button"
+    >
+      <ion-icon name="mic-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+    <ion-button
+      fill="clear"
+      class="text-blue-500 dark:text-blue-400"
+      type="submit"
+      [disabled]="!form.valid || !content.trim()"
+    >
+      <ion-icon name="send" slot="icon-only"></ion-icon>
+    </ion-button>
+  </form>
+</ion-footer>

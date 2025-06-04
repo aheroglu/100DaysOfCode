@@ -1,0 +1,168 @@
+<ion-header class="ion-no-border bg-white dark:bg-gray-800">
+  <ion-toolbar class="bg-white dark:bg-gray-800">
+    <ion-title class="text-black dark:text-white font-decorative text-2xl">Chattr</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon
+          name="search-outline"
+          class="text-black dark:text-white"
+        ></ion-icon>
+      </ion-button>
+      <ion-button routerLink="/profile">
+        <ion-icon
+          name="person-outline"
+          class="text-black dark:text-white"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-white dark:bg-gray-800">
+  <div class="px-2 py-2">
+    @if(isLoading){
+    <ion-spinner name="crescent" class="text-blue-500 dark:text-blue-400"></ion-spinner>
+    } @if(!isLoading && chats.length === 0){
+    <div class="flex flex-col items-center justify-center h-full min-h-screen">
+      <ion-icon
+        name="chatbubble-outline"
+        class="text-gray-400 dark:text-white text-5xl mb-2"
+      ></ion-icon>
+      <p class="text-gray-500 dark:text-white">No chats found</p>
+    </div>
+    } @for(chat of chats; track $index){
+    <div
+      class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 mb-2 flex items-center"
+      routerLink="/chat/{{chat.id}}"
+    >
+      <!-- Kullanıcı avatarı - Fotoğraf varsa göster, yoksa baş harflerini göster -->
+      <div *ngIf="chat.otherUser?.photoURL" class="w-12 h-12 rounded-full mr-3">
+        <img [src]="chat.otherUser?.photoURL" alt="User" class="w-full h-full rounded-full object-cover">
+      </div>
+      <div
+        *ngIf="!chat.otherUser?.photoURL"
+        class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center mr-3"
+      >
+        <span class="text-white text-lg font-bold">{{ getInitials(chat.otherUser?.displayName || 'User') }}</span>
+      </div>
+      
+      <div class="flex-1">
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-gray-800 dark:text-white">{{ chat.otherUser?.displayName || 'User' }}</h3>
+          <span class="text-xs text-gray-500 dark:text-white"
+            >{{ chat.lastMessageAt | firebaseDate | timeago }}</span
+          >
+        </div>
+        <p class="text-sm text-gray-600 dark:text-white overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]">
+          {{ chat.lastMessage }}
+        </p>
+      </div>
+    </div>
+    }
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="people-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="setModalOpen(true)">
+        <ion-icon name="person-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <ion-modal
+    [isOpen]="isModalOpen"
+    [initialBreakpoint]="0.6"
+    [breakpoints]="[0, 0.6, 0.8]"
+    (didDismiss)="setModalOpen(false)"
+    >
+    <div class="p-4 bg-white dark:bg-gray-800">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center">
+          <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+            Friends
+          </h2>
+          <div *ngIf="pendingFriends.length > 0" class="relative">
+            <ion-button fill="clear" (click)="navigate('pending-friends')">
+              <ion-icon
+                name="notifications"
+                class="text-yellow-400 text-2xl"
+              ></ion-icon>
+              <ion-badge
+                class="absolute -top-2 -right-2 text-xs p-0 m-0"
+                color="danger"
+                >{{ pendingFriends.length }}</ion-badge
+              >
+            </ion-button>
+          </div>
+        </div>
+        <ion-button fill="clear" (click)="setModalOpen(false)">
+          <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+
+      <div class="mb-4">
+        <ion-button
+          expand="block"
+          (click)="setModalOpen(false)"
+          routerLink="/add-friend"
+          class="w-full"
+        >
+          <ion-icon name="person-add-outline" slot="start"></ion-icon>
+          Add Friend
+        </ion-button>
+      </div>
+
+      <div
+        *ngIf="friends.length > 0"
+        class="divide-y divide-gray-100 dark:divide-gray-700"
+      >
+        <div *ngIf="friends.length === 0" class="text-center py-8">
+          <ion-icon
+            name="people-outline"
+            class="text-gray-400 dark:text-gray-500 text-5xl mb-2"
+          ></ion-icon>
+          <p class="text-gray-500 dark:text-gray-400">No friends found</p>
+        </div>
+
+        <div
+          *ngFor="let friend of friends"
+          class="py-3 flex items-center justify-between"
+          (click)="navigate('chat', friend.friendId)"
+        >
+          <div class="flex items-center">
+            <ion-avatar class="w-12 h-12 mr-3">
+              <img
+                [src]="friend.friend?.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+                alt="Friend Avatar"
+              />
+            </ion-avatar>
+            <div>
+              <h3 class="font-medium text-gray-800 dark:text-white">
+                {{ friend.friend?.displayName }}
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ friend.friend?.email }}
+              </p>
+            </div>
+          </div>
+          <ion-button fill="clear" (click)="navigate('chat', friend.friendId)">
+            <ion-icon name="chatbubble-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <div *ngIf="friends.length === 0">
+        <div class="flex items-center justify-center h-full">
+          <ion-icon
+            name="people-outline"
+            class="text-gray-400 dark:text-gray-500 text-5xl mb-2"
+          ></ion-icon>
+          <p class="text-gray-500 dark:text-gray-400">No friends found</p>
+        </div>
+      </div>
+    </div>
+  </ion-modal>
+</ion-content>

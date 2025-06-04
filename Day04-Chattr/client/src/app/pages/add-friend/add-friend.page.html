@@ -1,0 +1,106 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="bg-white dark:bg-gray-800">
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/home"
+        class="text-black dark:text-white"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title class="text-black dark:text-white font-bold"
+      >Add Friend</ion-title
+    >
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-gray-100 dark:bg-gray-900">
+  <!-- Arama Bölümü -->
+  <div class="p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-4">
+      <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">
+        Search
+      </h2>
+      <form #form="ngForm" (ngSubmit)="searchUser(form)" autocomplete="off">
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <ion-icon
+              name="search-outline"
+              class="text-gray-400 dark:text-gray-500"
+            ></ion-icon>
+          </div>
+          <input
+            [(ngModel)]="searchQuery"
+            name="searchQuery"
+            type="email"
+            placeholder="Search by email..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+          />
+        </div>
+        <div class="mt-3 flex justify-end">
+          <button
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center"
+          >
+            <ion-icon name="search" class="mr-1"></ion-icon>
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="text-center py-8">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+
+    <!-- Results -->
+    <div *ngIf="!isLoading" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+      <!-- No Results -->
+      <div *ngIf="!user && isUserSearched" class="text-center py-8">
+        <ion-icon
+          name="people-outline"
+          class="text-gray-400 dark:text-gray-500 text-5xl mb-2"
+        ></ion-icon>
+        <p class="text-gray-500 dark:text-gray-400">No results found</p>
+      </div>
+
+      <!-- No Search -->
+      <div *ngIf="!isUserSearched" class="text-center py-8">
+        <ion-icon
+          name="search-outline"
+          class="text-gray-400 dark:text-gray-500 text-5xl mb-2"
+        ></ion-icon>
+        <p class="text-gray-500 dark:text-gray-400">Search to find friends</p>
+      </div>
+
+      <!-- User -->
+      <div *ngIf="user" class="divide-y divide-gray-100 dark:divide-gray-700">
+        <div class="py-3 flex items-center justify-between">
+          <div class="flex items-center">
+            <ion-avatar class="w-12 h-12 mr-3">
+              <img
+                [src]="user.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+                alt="User Avatar"
+              />
+            </ion-avatar>
+            <div>
+              <h3 class="font-medium text-gray-800 dark:text-white">
+                {{ user.displayName }}
+              </h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ user.email }}
+              </p>
+            </div>
+          </div>
+          <button
+            (click)="sendRequest(user)"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-full text-sm transition duration-200"
+          >
+            <ion-icon name="person-add-outline" class="mr-1"></ion-icon>
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

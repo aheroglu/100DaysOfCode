@@ -1,0 +1,254 @@
+<ion-header class="ion-no-border bg-white dark:bg-gray-800">
+  <ion-toolbar class="bg-white dark:bg-gray-800">
+    <ion-buttons slot="start">
+      <ion-back-button
+        defaultHref="/home"
+        class="text-black dark:text-white"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title class="text-black dark:text-white font-bold">Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="bg-white dark:bg-gray-800">
+  <!-- Profil Başlığı -->
+  <div class="p-6 flex flex-col items-center">
+    <div
+      class="rounded-full bg-white border-4 border-white flex items-center justify-center mb-3"
+    >
+      <ion-avatar>
+        <img
+          [src]="userService.user?.photoURL || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+          alt="Profile Picture"
+          class="w-full h-full rounded-full"
+        />
+      </ion-avatar>
+    </div>
+    <h2 class="text-black dark:text-white text-xl font-bold">
+      {{userService.user?.displayName}}
+    </h2>
+    <p class="text-black/50 dark:text-white text-sm">
+      {{userService.user?.email}}
+    </p>
+  </div>
+
+  <!-- Profil Bilgileri ve Ayarlar -->
+  <div class="p-4">
+    <!-- Profil Bilgileri -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md mb-4">
+      <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+          Profile Information
+        </h3>
+      </div>
+      <div class="p-4">
+        <div class="flex items-center mb-4">
+          <div
+            class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3"
+          >
+            <ion-icon
+              name="person-outline"
+              class="text-blue-500 text-xl"
+            ></ion-icon>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Name</p>
+            <p class="text-gray-800 dark:text-white font-medium">
+              {{userService.user?.displayName}}
+            </p>
+          </div>
+          <ion-button
+            fill="clear"
+            slot="end"
+            class="ml-auto"
+            (click)="setChangeNameModal(true)"
+          >
+            <ion-icon
+              name="create-outline"
+              class="text-gray-500 dark:text-gray-400"
+            ></ion-icon>
+          </ion-button>
+        </div>
+
+        <div class="flex items-center mb-4">
+          <div
+            class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3"
+          >
+            <ion-icon
+              name="mail-outline"
+              class="text-blue-500 text-xl"
+            ></ion-icon>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Email</p>
+            <p class="text-gray-800 dark:text-white font-medium">
+              {{userService.user?.email}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md mb-4">
+      <div class="p-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+          Settings
+        </h3>
+      </div>
+      <div class="divide-y divide-gray-100 dark:divide-gray-700">
+        <!-- <div class="p-4 flex items-center">
+          <ion-icon
+            name="notifications-outline"
+            class="text-blue-500 text-xl mr-3"
+          ></ion-icon>
+          <div class="flex-1">
+            <p class="text-gray-800 dark:text-white">Notifications</p>
+          </div>
+          <ion-toggle checked></ion-toggle>
+        </div> -->
+        <div class="p-4 flex items-center">
+          <ion-icon
+            name="moon-outline"
+            class="text-blue-500 text-xl mr-3"
+          ></ion-icon>
+          <div class="flex-1">
+            <p class="text-gray-800 dark:text-white">Dark Mode</p>
+          </div>
+          <ion-toggle
+            checked="{{isDarkMode}}"
+            (ionChange)="toggleTheme()"
+          ></ion-toggle>
+        </div>
+        <div class="p-4 flex items-center" (click)="resetPassword()">
+          <ion-icon
+            name="lock-closed-outline"
+            class="text-blue-500 text-xl mr-3"
+          ></ion-icon>
+          <div class="flex-1">
+            <p class="text-gray-800 dark:text-white">Change Password</p>
+          </div>
+          <ion-icon
+            name="chevron-forward-outline"
+            class="text-gray-400 dark:text-gray-500"
+          ></ion-icon>
+        </div>
+        <!-- <div class="p-4 flex items-center">
+          <ion-icon
+            name="language-outline"
+            class="text-blue-500 text-xl mr-3"
+          ></ion-icon>
+          <div class="flex-1">
+            <p class="text-gray-800 dark:text-white">Language</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Turkish</p>
+          </div>
+          <ion-icon
+            name="chevron-forward-outline"
+            class="text-gray-400 dark:text-gray-500"
+          ></ion-icon>
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <button
+      (click)="logout()"
+      class="w-full bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition duration-200 font-medium flex items-center justify-center"
+    >
+      <ion-icon name="log-out-outline" class="mr-2"></ion-icon>
+      Logout
+    </button>
+  </div>
+</ion-content>
+
+<div
+  *ngIf="isChangeNameModalOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center"
+>
+  <div
+    class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+    (click)="setChangeNameModal(false)"
+  ></div>
+  <div
+    class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all"
+  >
+    <div
+      class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700"
+    >
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+        Change Name
+      </h3>
+      <button
+        class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none"
+        (click)="setChangeNameModal(false)"
+      >
+        <ion-icon name="close-outline" class="text-xl"></ion-icon>
+      </button>
+    </div>
+
+    <form #form="ngForm" (ngSubmit)="changeName()" autocomplete="off">
+      <div class="p-6">
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
+          Please enter the new name.
+        </p>
+
+        <div class="relative mb-4">
+          <div
+            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+          >
+            <ion-icon
+              name="person-outline"
+              class="text-gray-500 dark:text-gray-400"
+            ></ion-icon>
+          </div>
+          <input
+            [(ngModel)]="newName.firstName"
+            name="firstName"
+            type="text"
+            class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            placeholder="First name"
+            minlength="2"
+            required
+          />
+        </div>
+        <div class="relative mb-4">
+          <div
+            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+          >
+            <ion-icon
+              name="person-outline"
+              class="text-gray-500 dark:text-gray-400"
+            ></ion-icon>
+          </div>
+          <input
+            [(ngModel)]="newName.lastName"
+            name="lastName"
+            type="text"
+            class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            placeholder="Last name"
+            minlength="2"
+            required
+          />
+        </div>
+      </div>
+
+      <div
+        class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-3"
+      >
+        <button
+          class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+          (click)="setChangeNameModal(false)"
+        >
+          Cancel
+        </button>
+        <button
+          [disabled]="!form.valid"
+          class="disabled:opacity-50 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
+          type="submit"
+        >
+          Change
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

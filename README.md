@@ -45,14 +45,14 @@ I will be exploring various tools, libraries, and frameworks such as:
 
 I’ll be posting progress on:
 
-- [X](https://x.com/aherogludev)  
-- [LinkedIn](https://www.linkedin.com/in/aheroglu)  
+- [X](https://x.com/aherogludev)
+- [LinkedIn](https://www.linkedin.com/in/aheroglu)
 
 Each post will include:
 
-- 💡 What I built  
-- 🔧 What I learned  
-- 🔗 GitHub link to the code  
+- 💡 What I built
+- 🔧 What I learned
+- 🔗 GitHub link to the code
 - 🖼️ Screenshots or demo video
 
 ---
@@ -64,6 +64,7 @@ Each day, I will create a new folder for that day’s project:
 - [Day01 - Todo App](https://github.com/aheroglu/100DaysOfCode/tree/main/Day01-TodoApp)
 - [Day02 - Weather Dashboard](https://github.com/aheroglu/100DaysOfCode/tree/main/Day02-WeatherDashboard)
 - [Day03 - AI Chat UI](https://github.com/aheroglu/100DaysOfCode/tree/main/Day03-AIChatUI)
+- [Day04 - Chattr](https://github.com/aheroglu/100DaysOfCode/tree/main/Day04-Chattr)
 
 ---
 

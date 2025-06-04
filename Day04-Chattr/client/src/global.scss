@@ -1,0 +1,121 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font Tanımlamaları */
+:root {
+  --font-family-base: 'Poppins', sans-serif;
+  --font-family-decorative: 'Dancing Script', cursive;
+}
+
+/* Tüm uygulama için varsayılan font */
+body {
+  font-family: var(--font-family-base);
+}
+
+/* Dekoratif font sınıfı - uygulama başlığı için */
+.font-decorative {
+  font-family: var(--font-family-decorative);
+  font-weight: 600;
+}
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Ionic Bileşenleri için Özel Sınıflar */
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+ion-toolbar {
+  --background: var(--ion-toolbar-background);
+  --color: var(--ion-text-color);
+  --border-color: var(--ion-toolbar-border-color);
+}
+
+ion-item {
+  --background: var(--ion-item-background);
+  --color: var(--ion-text-color);
+  --border-color: var(--ion-item-border-color);
+}
+
+ion-card {
+  --background: var(--ion-card-background);
+  --color: var(--ion-text-color);
+}
+
+ion-button {
+  --color: var(--ion-text-color);
+}
+
+ion-toggle {
+  --background: var(--ion-item-background);
+  --background-checked: #3880ff;
+  --handle-background: #ffffff;
+  --handle-background-checked: #ffffff;
+}
+
+ion-icon {
+  color: var(--ion-text-color);
+}
+
+ion-back-button {
+  --color: var(--ion-text-color);
+}
+
+ion-title {
+  color: var(--ion-text-color);
+}
+
+ion-list {
+  background: var(--ion-background-color);
+}
+
+ion-modal {
+  --background: var(--ion-background-color);
+}
+
+/* Tailwind ile Ionic Bileşenlerinin Uyumlu Çalışması için Geçersiz Kılma */
+.dark ion-content,
+.dark ion-toolbar,
+.dark ion-item,
+.dark ion-card {
+  --background: var(--ion-background-color);
+  --color: var(--ion-text-color);
+}
