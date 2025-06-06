@@ -65,6 +65,7 @@ Each day, I will create a new folder for that day’s project:
 - [Day02 - Weather Dashboard](https://github.com/aheroglu/100DaysOfCode/tree/main/Day02-WeatherDashboard)
 - [Day03 - AI Chat UI](https://github.com/aheroglu/100DaysOfCode/tree/main/Day03-AIChatUI)
 - [Day04 - Chattr](https://github.com/aheroglu/100DaysOfCode/tree/main/Day04-Chattr)
+- [Day05 - Devfolio](https://github.com/aheroglu/100DaysOfCode/tree/main/Day05-Devfolio)
 
 ---
 
