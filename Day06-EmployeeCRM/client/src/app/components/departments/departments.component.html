@@ -1,0 +1,268 @@
+<!-- Ana konteyner -->
+<div class="container mx-auto px-4 py-8">
+  <!-- Başlık ve Yeni Departman Ekle butonu -->
+  <div
+    class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6"
+  >
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Department Management</h1>
+      <p class="text-gray-600 mt-1">View and manage all departments</p>
+    </div>
+    <button
+      (click)="setModalState('add', true)"
+      class="mt-4 md:mt-0 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors duration-300"
+    >
+      <i class="fa-solid fa-plus mr-2"></i>
+      Add New Department
+    </button>
+  </div>
+
+  <!-- Arama -->
+  <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <div class="flex items-center justify-end">
+      <!-- Arama kutusu -->
+      <div class="relative w-full max-w-md">
+        <div
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        >
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Department search..."
+          class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Departmanlar Tablosu -->
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              ID
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Department Name
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <!-- Dinamik departman satırları -->
+          <tr
+            *ngFor="let department of getCurrentPageItems()"
+            class="hover:bg-gray-50 transition-colors duration-200"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-500">#{{ department.id }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900">
+                {{ department.name }}
+              </div>
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
+              <div class="flex justify-end space-x-2">
+                <button
+                  (click)="getDepartment(department)"
+                  class="text-blue-600 cursor-pointer hover:text-blue-900 transition-colors duration-200"
+                >
+                  <i class="fa-solid fa-pen-to-square text-xl mr-2"></i>
+                </button>
+                <button
+                  (click)="deleteDepartment(department)"
+                  class="text-red-600 cursor-pointer hover:text-red-900 transition-colors duration-200"
+                >
+                  <i class="fa-solid fa-trash text-xl"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Veri yoksa gösterilecek mesaj -->
+          <tr *ngIf="filteredDepartments.length === 0">
+            <td colspan="3" class="px-6 py-10 text-center text-gray-500">
+              <div class="flex flex-col items-center">
+                <i class="fa-solid fa-box-open text-6xl text-gray-400 mb-4"></i>
+                <p class="text-lg font-medium">There is no department</p>
+                <p class="text-sm mt-1">
+                  There is no department record matching your search criteria.
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Sayfalama -->
+      <div
+        class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between"
+      >
+        <span class="text-xs xs:text-sm text-gray-900">
+          Total {{ totalItems }} records from {{ getDisplayedRange() }} are
+          displayed
+        </span>
+        <div class="inline-flex mt-2 xs:mt-0">
+          <button
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+            [ngClass]="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
+            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+          >
+            Previous
+          </button>
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage >= getTotalPages()"
+            [ngClass]="{
+              'opacity-50 cursor-not-allowed': currentPage >= getTotalPages()
+            }"
+            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Department Modal -->
+  <div
+    *ngIf="isAddModalOpen"
+    class="fixed inset-0 bg-gray-600/90 overflow-y-auto h-full w-full z-50 flex items-center justify-center"
+  >
+    <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-4 border-b">
+        <h3 class="text-lg font-semibold text-gray-900">Add New Department</h3>
+        <button
+          (click)="setModalState('add', false)"
+          class="text-gray-500 cursor-pointer hover:text-gray-700 focus:outline-none"
+        >
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <form
+        #newDepartmentForm="ngForm"
+        (ngSubmit)="addDepartment(newDepartmentForm)"
+        autocomplete="off"
+      >
+        <div class="p-6">
+          <div class="mb-4">
+            <label
+              for="departmentName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Department Name</label
+            >
+            <input
+              type="text"
+              id="departmentName"
+              name="departmentName"
+              [(ngModel)]="newDepartment.name"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter department name"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Modal Buttons -->
+        <div class="flex items-center justify-end p-4 border-t gap-3">
+          <button
+            (click)="setModalState('add', false)"
+            [disabled]="!newDepartmentForm.valid"
+            class="px-4 py-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            class="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div
+    *ngIf="isEditModalOpen"
+    class="fixed inset-0 bg-gray-600/90 overflow-y-auto h-full w-full z-50 flex items-center justify-center"
+  >
+    <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-4 border-b">
+        <h3 class="text-lg font-semibold text-gray-900">Edit Department</h3>
+        <button
+          (click)="setModalState('edit', false)"
+          class="text-gray-500 cursor-pointer hover:text-gray-700 focus:outline-none"
+        >
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <form
+        #editDepartmentForm="ngForm"
+        (ngSubmit)="editDepartment(editDepartmentForm)"
+        autocomplete="off"
+      >
+        <div class="p-6">
+          <div class="mb-4">
+            <label
+              for="departmentName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Department Name</label
+            >
+            <input
+              type="text"
+              id="departmentName"
+              name="editDepartmentName"
+              [(ngModel)]="selectedDepartment.name"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter department name"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Modal Buttons -->
+        <div class="flex items-center justify-end p-4 border-t gap-3">
+          <button
+            (click)="setModalState('edit', false)"
+            class="px-4 py-2 cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            [disabled]="!editDepartmentForm.valid"
+            class="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,573 @@
+<!-- Ana konteyner -->
+<div class="container mx-auto px-4 py-8">
+  <!-- Başlık ve Yeni Personel Ekle butonu -->
+  <div
+    class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6"
+  >
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Employee Management</h1>
+      <p class="text-gray-600 mt-1">View and manage all employee records</p>
+    </div>
+    <button
+      (click)="setModalState('add', true)"
+      class="mt-4 md:mt-0 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg flex items-center transition-colors duration-300"
+    >
+      <i class="fa-solid fa-plus mr-2"></i>
+      Add New Employee
+    </button>
+  </div>
+
+  <!-- Filtreler ve Arama -->
+  <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <div
+      class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0"
+    >
+      <!-- Sol taraf - Filtreler -->
+      <div
+        class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2"
+      >
+        <!-- Departman Filtresi -->
+        <div class="relative">
+          <select
+            [(ngModel)]="selectedDepartment"
+            (change)="onDepartmentChange()"
+            class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="All" selected>All Departments</option>
+            <option
+              *ngFor="let department of departments"
+              [value]="department.name"
+            >
+              {{ department.name }}
+            </option>
+          </select>
+          <i
+            class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2"
+          ></i>
+        </div>
+      </div>
+
+      <!-- Sağ taraf - Arama -->
+      <div class="relative">
+        <div
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        >
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Employee search..."
+          class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Personel Tablosu -->
+  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Employee
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Contact Information
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Department
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              City
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Start Date
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <!-- Dinamik personel satırları -->
+          <tr
+            *ngFor="let employee of getCurrentPageItems()"
+            class="hover:bg-gray-50 transition-colors duration-200"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ employee.firstName }} {{ employee.lastName }}
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    {{ employee.birthDate | date : "dd/MM/yyyy" }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900">{{ employee.email }}</div>
+              <div class="text-sm text-gray-500">
+                {{ employee.phoneNumber }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
+              >
+                {{ employee.department.name }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ employee.city }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ employee.hireDate | date : "dd/MM/yyyy" }}
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
+              <div class="flex justify-end space-x-2">
+                <button
+                  (click)="getEmployee(employee)"
+                  class="text-blue-600 cursor-pointer hover:text-blue-900 transition-colors duration-200"
+                >
+                  <i class="fa-solid fa-pen-to-square text-xl mr-2"></i>
+                </button>
+                <button
+                  (click)="deleteEmployee(employee)"
+                  class="text-red-600 cursor-pointer hover:text-red-900 transition-colors duration-200"
+                >
+                  <i class="fa-solid fa-trash text-xl"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Veri yoksa gösterilecek mesaj -->
+          <tr *ngIf="employees.length === 0">
+            <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+              <div class="flex flex-col items-center">
+                <i class="fa-solid fa-box-open text-6xl text-gray-400 mb-4"></i>
+                <p class="text-lg font-medium">There is no employee</p>
+                <p class="text-sm mt-1">
+                  There is no employee record matching your search criteria.
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Sayfalama -->
+      <div
+        class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between"
+      >
+        <span class="text-xs xs:text-sm text-gray-900">
+          Total {{ employees.length }} records from
+          {{ getDisplayedRange() }} are displayed
+        </span>
+        <div class="inline-flex mt-2 xs:mt-0">
+          <button
+            (click)="previousPage()"
+            [disabled]="currentPage === 1"
+            [ngClass]="{ 'opacity-50 cursor-not-allowed': currentPage === 1 }"
+            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l"
+          >
+            Previous
+          </button>
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage >= getTotalPages()"
+            [ngClass]="{
+              'opacity-50 cursor-not-allowed': currentPage >= getTotalPages()
+            }"
+            class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Employee Modal -->
+<div
+  *ngIf="isAddModalOpen"
+  class="fixed inset-0 bg-gray-600/90 overflow-y-auto h-full w-full z-50 flex items-center justify-center"
+>
+  <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 border-b">
+      <h3 class="text-lg font-semibold text-gray-900">Add New Employee</h3>
+      <button
+        (click)="setModalState('add', false)"
+        class="text-gray-500 cursor-pointer hover:text-gray-700 focus:outline-none"
+      >
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <form
+      #newEmployeeForm="ngForm"
+      (ngSubmit)="addEmployee(newEmployeeForm)"
+      autocomplete="off"
+    >
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="mb-4">
+            <label
+              for="firstName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >First Name</label
+            >
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              [(ngModel)]="newEmployee.firstName"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter first name"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="lastName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Last Name</label
+            >
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              [(ngModel)]="newEmployee.lastName"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter last name"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Email</label
+            >
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="newEmployee.email"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="phoneNumber"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Phone Number</label
+            >
+            <input
+              type="tel"
+              id="phoneNumber"
+              name="phoneNumber"
+              [(ngModel)]="newEmployee.phoneNumber"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter phone number"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="city"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >City</label
+            >
+            <input
+              type="text"
+              id="city"
+              name="city"
+              [(ngModel)]="newEmployee.city"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter city"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="departmentId"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Department</label
+            >
+            <select
+              id="departmentId"
+              name="departmentId"
+              [(ngModel)]="newEmployee.departmentId"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            >
+              <option value="" disabled selected>Select department</option>
+              <option *ngFor="let dept of departments" [value]="dept.id">
+                {{ dept.name }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label
+              for="birthDate"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Birth Date</label
+            >
+            <input
+              type="date"
+              id="birthDate"
+              name="birthDate"
+              [(ngModel)]="newEmployee.birthDate"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="hireDate"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Hire Date</label
+            >
+            <input
+              type="date"
+              id="hireDate"
+              name="hireDate"
+              [(ngModel)]="newEmployee.hireDate"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Buttons -->
+      <div class="flex items-center justify-end p-4 border-t gap-3">
+        <button
+          type="button"
+          (click)="setModalState('add', false)"
+          class="px-4 py-2 cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="!newEmployeeForm.valid"
+          class="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Employee Modal -->
+<div
+  *ngIf="isEditModalOpen"
+  class="fixed inset-0 bg-gray-600/90 overflow-y-auto h-full w-full z-50 flex items-center justify-center"
+>
+  <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 border-b">
+      <h3 class="text-lg font-semibold text-gray-900">Edit Employee</h3>
+      <button
+        (click)="setModalState('edit', false)"
+        class="text-gray-500 cursor-pointer hover:text-gray-700 focus:outline-none"
+      >
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <form
+      #editEmployeeForm="ngForm"
+      (ngSubmit)="editEmployee(editEmployeeForm)"
+      autocomplete="off"
+    >
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="mb-4">
+            <label
+              for="editFirstName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >First Name</label
+            >
+            <input
+              type="text"
+              id="editFirstName"
+              name="editFirstName"
+              [(ngModel)]="selectedEmployee.firstName"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter first name"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="editLastName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Last Name</label
+            >
+            <input
+              type="text"
+              id="editLastName"
+              name="editLastName"
+              [(ngModel)]="selectedEmployee.lastName"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter last name"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="editEmail"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Email</label
+            >
+            <input
+              type="email"
+              id="editEmail"
+              name="editEmail"
+              [(ngModel)]="selectedEmployee.email"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="editPhoneNumber"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Phone Number</label
+            >
+            <input
+              type="tel"
+              id="editPhoneNumber"
+              name="editPhoneNumber"
+              [(ngModel)]="selectedEmployee.phoneNumber"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter phone number"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="editCity"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >City</label
+            >
+            <input
+              type="text"
+              id="editCity"
+              name="editCity"
+              [(ngModel)]="selectedEmployee.city"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Enter city"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="editDepartmentId"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Department</label
+            >
+            <select
+              id="editDepartmentId"
+              name="editDepartmentId"
+              [(ngModel)]="selectedEmployee.departmentId"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            >
+              <option value="" disabled>Select department</option>
+              <option *ngFor="let dept of departments" [value]="dept.id">
+                {{ dept.name }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label
+              for="editBirthDate"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Birth Date</label
+            >
+            <input
+              type="date"
+              id="editBirthDate"
+              name="editBirthDate"
+              [ngModel]="formatDate(selectedEmployee.birthDate)"
+              (ngModelChange)="handleDateChange($event, 'birthDate')"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="editHireDate"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Hire Date</label
+            >
+            <input
+              type="date"
+              id="editHireDate"
+              name="editHireDate"
+              [ngModel]="formatDate(selectedEmployee.hireDate)"
+              (ngModelChange)="handleDateChange($event, 'hireDate')"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Buttons -->
+      <div class="flex items-center justify-end p-4 border-t gap-3">
+        <button
+          type="button"
+          (click)="setModalState('edit', false)"
+          class="px-4 py-2 cursor-pointer bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="!editEmployeeForm.valid"
+          class="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<!-- Ana Konteyner -->
+<div class="flex flex-col min-h-screen">
+  <!-- Header / Navbar -->
+  <header class="bg-white shadow-md">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <!-- Logo ve Başlık -->
+        <div class="flex items-center space-x-2 cursor-pointer" routerLink="/">
+          <div
+            class="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center"
+          >
+            <i class="fa-solid fa-user-tie text-white text-lg"></i>
+          </div>
+          <h1 class="text-xl font-bold text-gray-800">CRM System</h1>
+        </div>
+
+        <nav class="hidden md:flex space-x-8">
+          @if(isAuthenticated){
+          <a
+            routerLink="/dashboard"
+            routerLinkActive="text-blue-600 font-medium"
+            class="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+          >
+            Dashboard
+          </a>
+          <a
+            routerLink="/employees"
+            routerLinkActive="text-blue-600 font-medium"
+            class="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+          >
+            Employees
+          </a>
+          <a
+            routerLink="/departments"
+            routerLinkActive="text-blue-600 font-medium"
+            class="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+          >
+            Departments
+          </a>
+          <button
+            (click)="auth.logout()"
+            class="text-gray-600 cursor-pointer hover:text-gray-500 transition-colors duration-200 flex items-center space-x-1"
+          >
+            <i class="fa-solid fa-sign-out-alt"></i>
+          </button>
+          } @else {
+          <a
+            routerLink="/login"
+            routerLinkActive="text-blue-600 font-medium"
+            class="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+          >
+            Login </a
+          >}
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ana İçerik -->
+  <main class="flex-grow bg-gray-50">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-center items-center">
+        <div class="mb-4 md:mb-0">
+          <p class="text-sm text-gray-600">
+            © 2025 CRM System. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

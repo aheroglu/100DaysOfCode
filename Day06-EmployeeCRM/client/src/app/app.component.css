@@ -1,0 +1,8 @@
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.router-link-active {
+  color: #2563eb;
+  font-weight: 500;
+}

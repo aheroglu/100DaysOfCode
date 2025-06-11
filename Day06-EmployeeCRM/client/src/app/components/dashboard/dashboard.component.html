@@ -1,0 +1,194 @@
+<!-- Ana konteyner -->
+<div class="container mx-auto px-4 py-8">
+  <!-- Başlık -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
+    <p class="text-gray-600 mt-1">
+      CRM Sisteminizdeki personel ve departman istatistiklerini görüntüleyin
+    </p>
+  </div>
+
+  <!-- Yükleniyor göstergesi -->
+  <div
+    *ngIf="isLoading"
+    class="flex justify-center items-center py-20 h-screen"
+  >
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"
+    ></div>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Özet kartlar -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Toplam Personel Kartı -->
+      <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-blue-100 mr-4">
+            <i class="fa-solid fa-users text-xl text-blue-500"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Employee</p>
+            <p class="text-2xl font-bold text-gray-800">
+              {{ dashboardStats.employeeCount }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toplam Departman Kartı -->
+      <div
+        class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500"
+      >
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-green-100 mr-4">
+            <i class="fa-solid fa-building text-xl text-green-500"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Department</p>
+            <p class="text-2xl font-bold text-gray-800">
+              {{ dashboardStats.departmentCount }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ortalama Yaş Kartı -->
+      <div
+        class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-yellow-500"
+      >
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-yellow-100 mr-4">
+            <i class="fa-solid fa-calendar text-xl text-yellow-500"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-600">Average Age</p>
+            <p class="text-2xl font-bold text-gray-800">
+              {{ calculateAverageAge() }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bu Ay İşe Alınanlar Kartı -->
+      <div
+        class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500"
+      >
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-purple-100 mr-4">
+            <i class="fa-solid fa-user-plus text-xl text-purple-500"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-gray-600">Hired This Month</p>
+            <p class="text-2xl font-bold text-gray-800">
+              {{ dashboardStats.hiredThisMonth }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Son Eklenen Personeller -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div class="p-6 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-800">Recent Employees</h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Employee
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Department
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Email
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Hiring Date
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                City
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr
+              *ngFor="let employee of recentEmployees"
+              class="hover:bg-gray-50 transition-colors duration-200"
+            >
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ employee.firstName }} {{ employee.lastName }}
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800':
+                      employee.department &&
+                      employee.department.name === 'İnsan Kaynakları',
+                    'bg-blue-100 text-blue-800':
+                      employee.department &&
+                      employee.department.name === 'Yazılım',
+                    'bg-purple-100 text-purple-800':
+                      employee.department &&
+                      employee.department.name === 'Pazarlama',
+                    'bg-yellow-100 text-yellow-800':
+                      employee.department &&
+                      employee.department.name === 'Finans'
+                  }"
+                >
+                  {{ employee.department ? employee.department.name : "" }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ employee.email }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ employee.hireDate | date : "dd.MM.yyyy" }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ employee.city }}
+              </td>
+            </tr>
+
+            <!-- Veri yoksa gösterilecek mesaj -->
+            <tr *ngIf="recentEmployees.length === 0">
+              <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                <div class="flex flex-col items-center">
+                  <i
+                    class="fa-solid fa-box-open text-6xl text-gray-400 mb-4"
+                  ></i>
+                  <p class="text-lg font-medium">There is no employee</p>
+                  <p class="text-sm mt-1">Add employees to see them here</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
