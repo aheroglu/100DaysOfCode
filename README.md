@@ -67,6 +67,7 @@ Each day, I will create a new folder for that day’s project:
 - [Day04 - Chattr](https://github.com/aheroglu/100DaysOfCode/tree/main/Day04-Chattr)
 - [Day05 - Devfolio](https://github.com/aheroglu/100DaysOfCode/tree/main/Day05-Devfolio)
 - [Day06 - Employee CRM](https://github.com/aheroglu/100DaysOfCode/tree/main/Day06-EmployeeCRM)
+- [Day07 - Global News](https://github.com/aheroglu/100DaysOfCode/tree/main/Day07-GlobalNews)
 
 ---
 

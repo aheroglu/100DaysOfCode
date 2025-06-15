@@ -1,0 +1,173 @@
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 to-blue-700 py-20">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">
+        Search Global News
+      </h1>
+      <p class="text-xl text-blue-100 mb-8">
+        Find the latest news and articles from around the world
+      </p>
+
+      <!-- Search Box -->
+      <div class="relative max-w-2xl mx-auto">
+        <div class="flex flex-col md:flex-row gap-4">
+          <!-- Search Input -->
+          <div class="flex-1 relative">
+            <div
+              class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+            >
+              <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+            </div>
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="search(true)"
+              placeholder="Search for news..."
+              class="w-full pl-12 pr-4 py-4 bg-white rounded-xl shadow-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-300"
+            />
+          </div>
+
+          <!-- Sort By -->
+          <div class="w-full md:w-48">
+            <select
+              [(ngModel)]="sortBy"
+              class="w-full px-4 py-4 bg-white rounded-xl shadow-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-300"
+            >
+              <option value="publishedAt">Latest First</option>
+              <option value="popularity">Most Popular</option>
+            </select>
+          </div>
+
+          <!-- Search Button -->
+          <button
+            (click)="search()"
+            class="w-full md:w-auto px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center space-x-2 shadow-lg"
+          >
+            <span>Search</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Search Results Section -->
+<section class="py-12">
+  <div class="container mx-auto px-4">
+    <!-- Results Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center space-x-3">
+        <i class="fa-solid fa-newspaper text-blue-500 text-2xl"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Search Results</h2>
+      </div>
+      <div class="text-gray-500">{{ searchResults.length }} results found</div>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        *ngFor="let result of searchResults"
+        class="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group"
+      >
+        <!-- Image -->
+        <div class="relative aspect-video overflow-hidden">
+          <img
+            [src]="result.urlToImage"
+            [alt]="result.title"
+            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <!-- Source & Date -->
+          <div
+            class="flex items-center justify-between text-sm text-gray-500 mb-3"
+          >
+            <span class="flex items-center space-x-2">
+              <i class="fa-solid fa-globe"></i>
+              <span>{{ result.source.name }}</span>
+            </span>
+            <span class="flex items-center space-x-2">
+              <i class="fa-regular fa-clock"></i>
+              <span>{{ result.publishedAt | date }}</span>
+            </span>
+          </div>
+
+          <!-- Title -->
+          <a
+            [href]="result.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-lg font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300"
+          >
+            {{ result.title }}
+          </a>
+
+          <!-- Description -->
+          <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+            {{ result.description }}
+          </p>
+
+          <!-- Category & Read More -->
+          <div class="flex items-center justify-between">
+            <span
+              class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm font-medium"
+            >
+              {{ result.source.name }}
+            </span>
+            <a
+              [href]="result.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center space-x-1 group/link"
+            >
+              <span>Read More</span>
+              <i
+                class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/link:translate-x-1"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-center mt-8">
+      <span class="mb-4 block"
+        >Showing {{ searchResults.length }} of {{ totalResults }}</span
+      >
+      <button
+        [disabled]="isLoading || searchResults.length >= totalResults"
+        (click)="loadMoreNews()"
+        class="px-6 py-2.5 cursor-pointer disabled:opacity-50 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+      >
+        {{ isLoading ? "Loading..." : "Load More" }}
+        <i *ngIf="isLoading" class="fa-solid fa-spinner animate-spin ml-2"></i>
+      </button>
+    </div>
+
+    <!-- No Results State -->
+    <div
+      *ngIf="searchResults.length === 0 && hasSearched"
+      class="text-center py-16"
+    >
+      <i class="fa-solid fa-search text-gray-300 text-6xl mb-4"></i>
+      <h3 class="text-xl font-bold text-gray-800 mb-2">No Results Found</h3>
+      <p class="text-gray-500">
+        Try different keywords or browse through our popular categories
+      </p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex items-center justify-center py-16">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"
+      ></div>
+    </div>
+  </div>
+</section>

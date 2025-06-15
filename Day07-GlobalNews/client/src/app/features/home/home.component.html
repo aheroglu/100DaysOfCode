@@ -1,0 +1,325 @@
+<!-- Hero Section -->
+<section class="relative overflow-hidden mb-8">
+  <!-- Background Pattern -->
+  <div
+    class="absolute rounded-lg inset-0 bg-gradient-to-r from-blue-600 to-blue-800 opacity-90"
+  ></div>
+  <div
+    class="absolute rounded-lg inset-0 bg-[url('https://picsum.photos/1920/1080')] bg-cover bg-center mix-blend-overlay"
+  ></div>
+
+  <!-- Animated Shapes -->
+  <div class="absolute rounded-lg inset-0 overflow-hidden">
+    <div
+      class="absolute w-96 h-96 -top-48 -left-48 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+    ></div>
+    <div
+      class="absolute w-96 h-96 -bottom-48 -right-48 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
+    ></div>
+  </div>
+
+  <!-- Content -->
+  <div class="relative container mx-auto px-4 py-20">
+    <div class="max-w-3xl mx-auto text-center">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6 text-white leading-tight">
+        Global<span class="text-blue-200">News</span>
+      </h1>
+      <p class="text-xl md:text-2xl mb-8 text-blue-100 leading-relaxed">
+        From all corners of the world, the latest news, carefully selected for
+        you
+      </p>
+      <div
+        class="flex items-center justify-center space-x-4 text-lg text-blue-200 font-medium"
+      >
+        <i class="fa-solid fa-calendar-day"></i>
+        <p>{{ "2025-06-15" | date : "longDate" }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured News -->
+<section *ngIf="topNews.length > 0" class="mb-16 py-12">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center mb-8">
+      <i class="fa-solid fa-star text-yellow-500 text-2xl mr-3"></i>
+      <h2
+        class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent"
+      >
+        Featured News
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Ana Haber -->
+      <div
+        class="group relative overflow-hidden rounded-2xl shadow-2xl transform transition-all duration-500 hover:-translate-y-1 hover:shadow-3xl h-[500px]"
+      >
+        <div class="relative h-[500px] overflow-hidden">
+          <img
+            [src]="topNews[0].urlToImage"
+            [alt]="topNews[0].title"
+            class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80"
+          ></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <div class="flex items-center gap-3 mb-4">
+              <span
+                class="px-3 py-1 bg-blue-600 rounded-full text-sm font-medium"
+              >
+                {{ topNews[0].source.name }}
+              </span>
+              <span class="text-sm opacity-75">
+                <i class="fa-regular fa-clock mr-2"></i>
+                {{ topNews[0].publishedAt | date : "medium" }}
+              </span>
+            </div>
+            <a
+              [href]="topNews[0].url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-3xl font-bold mb-4 group-hover:text-blue-400 transition-colors duration-300"
+            >
+              {{ topNews[0].title }}
+            </a>
+            <p class="text-gray-200 mb-6 line-clamp-2">
+              {{ topNews[0].description }}
+            </p>
+            <a
+              [href]="topNews[0].url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600/90 backdrop-blur rounded-lg hover:bg-blue-700 transition-all duration-300 group-hover:scale-105"
+            >
+              Read More
+              <i
+                class="fa-solid fa-arrow-right transition-transform duration-300 group-hover:translate-x-1"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diğer Öne Çıkan Haberler -->
+      <div class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px]">
+        <ng-container *ngFor="let news of topNews.slice(1, 5); let i = index">
+          <div
+            class="group bg-white/95 backdrop-blur rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col"
+          >
+            <div class="relative overflow-hidden h-[140px]">
+              <img
+                [src]="news.urlToImage"
+                [alt]="news.title"
+                class="w-full h-[140px] object-cover object-center transform transition-transform duration-500 group-hover:scale-110"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></div>
+            </div>
+            <div class="p-4 flex flex-col h-[95px] justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span
+                  class="text-sm font-medium text-gray-700 flex items-center"
+                >
+                  <i class="fa-regular fa-clock mr-2"></i>
+                  {{ news.publishedAt | date : "medium" }}
+                </span>
+                <span class="text-sm font-medium text-gray-700">
+                  {{ news.source.name }}
+                </span>
+              </div>
+              <h3
+                class="text-base font-bold mb-2 text-gray-800 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2"
+              >
+                {{ news.title }}
+              </h3>
+              <div class="flex justify-end mt-auto">
+                <a
+                  [href]="news.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+                >
+                  Devamını Oku
+                  <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- News List Section -->
+<section class="mb-16">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center mb-8">
+      <i class="fa-solid fa-newspaper text-blue-500 text-2xl mr-3"></i>
+      <h2
+        class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent"
+      >
+        Global News
+      </h2>
+    </div>
+    <!-- Loading State -->
+    <div
+      *ngIf="loading"
+      class="text-center py-16 bg-white rounded-2xl shadow-lg"
+    >
+      <i
+        class="fa-solid fa-circle-notch fa-spin text-blue-500 text-6xl mb-6"
+      ></i>
+      <p class="text-gray-500 text-xl font-medium">Haberler Yükleniyor...</p>
+      <p class="text-gray-400 mt-2">Lütfen bekleyin</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="text-center py-16 bg-white rounded-2xl shadow-lg">
+      <i
+        class="fa-solid fa-triangle-exclamation text-red-500 text-6xl mb-6"
+      ></i>
+      <p class="text-gray-500 text-xl font-medium">{{ error }}</p>
+      <button
+        (click)="loadNews()"
+        class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+      >
+        Tekrar Dene
+      </button>
+    </div>
+
+    <!-- No News Found -->
+    <div
+      *ngIf="!loading && !error && news.length === 0"
+      class="text-center py-16 bg-white rounded-2xl shadow-lg"
+    >
+      <i class="fa-solid fa-newspaper text-blue-200 text-8xl mb-6"></i>
+      <p class="text-gray-500 text-xl font-medium">Haber Bulunamadı</p>
+      <p class="text-gray-400 mt-2">Lütfen başka bir kategori seçin.</p>
+    </div>
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      *ngIf="!loading && !error && news.length > 0"
+    >
+      <div
+        *ngFor="let item of news"
+        class="group bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative flex flex-col h-full"
+      >
+        <div
+          class="absolute inset-x-0 h-32 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        ></div>
+
+        <div class="relative overflow-hidden aspect-[4/3]">
+          <img
+            [src]="item.urlToImage"
+            alt="{{ item.title }}"
+            class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"
+          ></div>
+
+          <span
+            class="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 bg-black/20 backdrop-blur-sm text-white/90 rounded-full text-sm transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300"
+          >
+            <i class="fa-regular fa-clock"></i>
+            {{ item.publishedAt | date : "medium" }}
+          </span>
+        </div>
+
+        <div class="p-6 relative flex-grow flex flex-col">
+          <div
+            class="flex items-center gap-2 mb-3 opacity-60 group-hover:opacity-100 transition-opacity"
+          >
+            <span class="flex items-center gap-1.5 text-sm text-gray-600">
+              <i class="fa-solid fa-newspaper text-blue-500"></i>
+              {{ item.source.name }}
+            </span>
+          </div>
+
+          <h3
+            class="text-xl font-bold mb-3 text-gray-800 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2"
+          >
+            {{ item.title }}
+          </h3>
+
+          <p
+            class="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3 group-hover:text-gray-700 transition-colors duration-300"
+          >
+            {{ item.description }}
+          </p>
+
+          <div class="relative mt-auto">
+            <div
+              class="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"
+            ></div>
+            <a
+              [href]="item.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-4 w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-blue-600 transform hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Read More
+              <i
+                class="fa-solid fa-arrow-right transition-transform duration-300 group-hover:translate-x-1"
+              ></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col items-center mt-8">
+      <span class="mb-4 block"
+        >Showing {{ news.length }} of {{ totalResults }}</span
+      >
+      <button
+        [disabled]="loading || news.length >= totalResults"
+        (click)="loadMoreNews()"
+        class="px-6 py-2.5 cursor-pointer disabled:opacity-50 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+      >
+        {{ loading ? "Loading..." : "Load More" }}
+        <i *ngIf="loading" class="fa-solid fa-spinner animate-spin ml-2"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="my-16 relative overflow-hidden rounded-lg">
+  <div
+    class="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800 opacity-90"
+  ></div>
+  <div
+    class="absolute inset-0 bg-[url('https://picsum.photos/1920/600')] bg-cover bg-center mix-blend-overlay"
+  ></div>
+
+  <div class="relative container mx-auto px-4 py-16 text-center">
+    <div class="max-w-3xl mx-auto">
+      <i class="fa-solid fa-envelope-open-text text-4xl text-blue-200 mb-6"></i>
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
+        Daily News Bulletin
+      </h2>
+      <p class="text-lg text-blue-100 mb-8 leading-relaxed">
+        Get the latest news every morning in your email inbox. You can
+        unsubscribe at any time.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+        <input
+          type="email"
+          placeholder="Your email address"
+          class="flex-grow px-6 py-3 rounded-lg text-gray-800 bg-white/90 backdrop-blur-sm border-2 border-transparent focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-300/50 transition-all duration-300 shadow-lg"
+        />
+        <button
+          class="px-8 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-400 focus:bg-blue-400 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 font-medium"
+        >
+          <span>Subscribe</span>
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

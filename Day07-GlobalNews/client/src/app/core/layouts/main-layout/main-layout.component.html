@@ -1,0 +1,300 @@
+<app-location-guard></app-location-guard>
+
+<ng-container *ngIf="isLocationGranted$ | async">
+  <!-- Header/Navbar -->
+  <header
+    class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200/80 shadow-sm"
+  >
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo and Navigation -->
+        <div class="flex items-center space-x-4">
+          <!-- Logo -->
+          <a
+            routerLink="/"
+            class="flex items-center space-x-3 group cursor-pointer"
+          >
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20 transition-transform duration-300 group-hover:scale-105"
+            >
+              <i class="fa-solid fa-newspaper text-white text-xl"></i>
+            </div>
+            <span
+              class="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
+            >
+              GlobalNews
+            </span>
+          </a>
+
+          <!-- Navigation moved next to logo -->
+          <a
+            routerLink="/search"
+            class="px-4 py-2 text-gray-600 cursor-pointer hover:text-blue-600 rounded-lg hover:bg-blue-50/50 transition-all duration-300 font-medium flex items-center space-x-1"
+          >
+            <i class="fa-solid fa-compass text-sm"></i>
+            <span>Explore</span>
+          </a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative hidden md:block w-1/3">
+          <div
+            class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+          >
+            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+          </div>
+          <input
+            (keydown.enter)="onSearch($event)"
+            [(ngModel)]="searchQuery"
+            type="text"
+            placeholder="Type anything and press enter..."
+            class="w-full py-2.5 pl-10 pr-4 text-gray-700 bg-gray-50/50 rounded-xl border border-gray-200/50 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20 transition-all duration-300"
+            required
+          />
+          <kbd
+            class="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-xs text-gray-400 bg-gray-100 rounded border border-gray-200"
+          >
+            <i class="fa-solid fa-command text-[10px]"></i>
+            K
+          </kbd>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button
+          class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100/80 transition-colors duration-300"
+        >
+          <i class="fa-solid fa-bars text-gray-600"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Search (Visible on small screens) -->
+      <div class="py-3 md:hidden relative">
+        <div
+          class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+        >
+          <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+        </div>
+        <input
+          type="text"
+          placeholder="Type anything and press enter..."
+          class="w-full py-2.5 pl-10 pr-4 text-gray-700 bg-gray-50/50 rounded-xl border border-gray-200/50 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20 transition-all duration-300"
+        />
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-6 min-h-screen">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer
+    class="bg-gradient-to-b from-gray-900 to-gray-950 text-white pt-16 pb-8 relative overflow-hidden"
+  >
+    <!-- Background Pattern -->
+    <div
+      class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMS4yMjY3NiAwQzEuOTEzNzQgMCAyLjQ1MzUxIDAuNTM5NzczIDIuNDUzNTEgMS4yMjY3NkMyLjQ1MzUxIDEuOTEzNzQgMS45MTM3NCAyLjQ1MzUxIDEuMjI2NzYgMi40NTM1MUMwLjUzOTc3MyAyLjQ1MzUxIDAgMS45MTM3NCAwIDEuMjI2NzZDMCAwLjUzOTc3MyAwLjUzOTc3MyAwIDEuMjI2NzYgMFoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-10"
+    ></div>
+
+    <div class="container mx-auto px-4 relative">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <!-- Logo and Description -->
+        <div class="space-y-6">
+          <div class="flex items-center space-x-3 group">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/20"
+            >
+              <i class="fa-solid fa-newspaper text-white text-xl"></i>
+            </div>
+            <span class="text-xl font-bold text-white">GlobalNews</span>
+          </div>
+          <p class="text-gray-400 leading-relaxed">
+            World's latest news, articles, and analysis for you.
+          </p>
+          <div class="flex space-x-4">
+            <a
+              href="#"
+              class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-300"
+            >
+              <i class="fa-brands fa-twitter text-lg"></i>
+            </a>
+            <a
+              href="#"
+              class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-300"
+            >
+              <i class="fa-brands fa-facebook text-lg"></i>
+            </a>
+            <a
+              href="#"
+              class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors duration-300"
+            >
+              <i class="fa-brands fa-instagram text-lg"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="space-y-6">
+          <h3 class="text-lg font-semibold text-white">Quick Links</h3>
+          <ul class="space-y-3">
+            <li>
+              <a
+                routerLink="/"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span>Home</span>
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/search"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span>Explore</span>
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/about"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span>About</span>
+              </a>
+            </li>
+            <li>
+              <a
+                routerLink="/contact"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span>Contact</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Categories -->
+        <div class="space-y-6">
+          <h3 class="text-lg font-semibold text-white">Categories</h3>
+          <ul class="space-y-3">
+            <li>
+              <a
+                href="#"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span>World</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span> Economy</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span>Technology</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="text-gray-400 hover:text-white flex items-center space-x-2 group"
+              >
+                <i
+                  class="fa-solid fa-chevron-right text-xs text-gray-600 group-hover:text-blue-500 transition-colors duration-300"
+                ></i>
+                <span>Sport</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="space-y-6">
+          <h3 class="text-lg font-semibold text-white">Newsletter</h3>
+          <p class="text-gray-400 leading-relaxed">
+            Get the latest news in your inbox
+          </p>
+          <div class="space-y-3">
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+              >
+                <i class="fa-regular fa-envelope text-gray-400"></i>
+              </div>
+              <input
+                type="email"
+                placeholder="Email Address"
+                class="w-full pl-10 pr-4 py-3 bg-white/5 text-white rounded-xl border border-gray-800 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 placeholder-gray-500"
+              />
+            </div>
+            <button
+              class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:from-blue-700 hover:to-blue-600 transform hover:shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] font-medium"
+            >
+              Subscribe
+              <i class="fa-solid fa-paper-plane ml-2 text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copyright -->
+      <div class="mt-16 pt-8 border-t border-gray-800">
+        <div class="text-center space-y-4">
+          <p class="text-gray-400">
+            &copy; {{ 2025 }} GlobalNews. All rights reserved.
+          </p>
+          <div
+            class="flex items-center justify-center space-x-4 text-gray-500 text-sm"
+          >
+            <a
+              href="#"
+              class="hover:text-gray-400 transition-colors duration-300"
+              >Privacy Policy</a
+            >
+            <span>&middot;</span>
+            <a
+              href="#"
+              class="hover:text-gray-400 transition-colors duration-300"
+              >Terms of Use</a
+            >
+            <span>&middot;</span>
+            <a
+              href="#"
+              class="hover:text-gray-400 transition-colors duration-300"
+              >GDPR</a
+            >
+          </div>
+          <p class="text-blue-400/80 font-medium">#100DaysOfCode project</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</ng-container>
